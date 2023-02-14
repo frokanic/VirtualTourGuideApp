@@ -1,5 +1,6 @@
 package com.example.museumapp.data.repository
 
+import android.util.Log
 import com.example.museumapp.data.local.ToursDao
 import com.example.museumapp.data.remote.ToursApi
 import com.example.museumapp.domain.model.Tour
@@ -12,7 +13,7 @@ class ToursRepositoryImpl @Inject constructor(
     private val dao: ToursDao
 ): ToursRepository {
 
-    override fun getToursFromRemote(): List<Tour>? {
+    override suspend fun getToursFromRemote(): Tour? {
         return api.getTour()
     }
 

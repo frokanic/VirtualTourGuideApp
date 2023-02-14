@@ -19,3 +19,6 @@ data class Tour(
     val title: String,
     @PrimaryKey val id: Int? = null
 )
+
+
+

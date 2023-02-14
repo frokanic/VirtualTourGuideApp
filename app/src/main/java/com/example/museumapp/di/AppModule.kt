@@ -24,7 +24,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideToursApi(api: ToursApi): List<Tour>? {
+    suspend fun provideToursApi(api: ToursApi): Tour? {
         return api.getTour()
     }
 

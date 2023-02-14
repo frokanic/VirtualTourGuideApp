@@ -7,7 +7,7 @@ import com.example.museumapp.databinding.ItemTourBinding
 import com.example.museumapp.domain.model.Tour
 import com.squareup.picasso.Picasso
 
-class AllToursRecyclerViewAdapter(private val tours: List<Tour>): RecyclerView.Adapter<AllToursRecyclerViewAdapter.AllToursViewHolder>() {
+class AllToursRecyclerViewAdapter(private val tours: Tour): RecyclerView.Adapter<AllToursRecyclerViewAdapter.AllToursViewHolder>() {
 
     inner class AllToursViewHolder(val binding: ItemTourBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -23,12 +23,12 @@ class AllToursRecyclerViewAdapter(private val tours: List<Tour>): RecyclerView.A
     }
 
     override fun getItemCount(): Int {
-        return tours.size
+        return 1
     }
 
     override fun onBindViewHolder(holder: AllToursViewHolder, position: Int) {
         val binding = holder.binding
-        val curItem = tours[position]
+        val curItem = tours
 
         holder.itemView.apply {
             Picasso.get().load(curItem.thumbnail).into(binding.ivItemTour)

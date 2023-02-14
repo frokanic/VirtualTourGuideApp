@@ -3,12 +3,17 @@ package com.example.museumapp.presentation.all_tours_screen
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.museumapp.domain.model.Tour
 import com.example.museumapp.domain.repository.ToursRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
@@ -20,9 +25,20 @@ class AllToursViewModel @Inject constructor(
 ): ViewModel() {
 
 
-    fun getToursFromRemote(): List<Tour>? {
-        return repository.getToursFromRemote()
+    fun getToursFromRemote(): Tour? {
+        val toursList = GlobalScope.launch(Dispatchers.IO) {
+            if (repository.getToursFromRemote() != null) {
+                val tList = withContext(Dispatchers.Default) {
+                    repository.getToursFromRemote()!!
+                    //Log.e("VIEWMODELCHECK3", toursList.toString())
+                }
+            }
+        }
+
+        return tList
     }
+
+
 
     fun getToursFromLocal(): Flow<List<Tour>?> {
         return repository.getToursFromLocal()
