@@ -1,0 +1,94 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "329dff7b438b1c159297377340f237fc",
+    "entities": [
+      {
+        "tableName": "tours",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`average_rating` TEXT NOT NULL, `duration` TEXT NOT NULL, `header_image` TEXT NOT NULL, `permalink` TEXT NOT NULL, `rating_count` INTEGER NOT NULL, `retail_price` TEXT NOT NULL, `sales_price` TEXT NOT NULL, `sku` TEXT NOT NULL, `thumbnail` TEXT NOT NULL, `title` TEXT NOT NULL, `id` INTEGER, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "average_rating",
+            "columnName": "average_rating",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "duration",
+            "columnName": "duration",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "header_image",
+            "columnName": "header_image",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "permalink",
+            "columnName": "permalink",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rating_count",
+            "columnName": "rating_count",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "retail_price",
+            "columnName": "retail_price",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sales_price",
+            "columnName": "sales_price",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sku",
+            "columnName": "sku",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "thumbnail",
+            "columnName": "thumbnail",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '329dff7b438b1c159297377340f237fc')"
+    ]
+  }
+}
