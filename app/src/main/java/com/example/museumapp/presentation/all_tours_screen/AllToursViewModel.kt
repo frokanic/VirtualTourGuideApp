@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.museumapp.domain.model.Tour
@@ -11,7 +12,6 @@ import com.example.museumapp.domain.repository.ToursRepository
 import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -25,25 +25,31 @@ class AllToursViewModel @Inject constructor(
     private val repository: ToursRepository
 ): ViewModel() {
 
+    val tourLiveData = MutableLiveData<Tour?>()
 
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            val response = repository.getToursFromRemote()
+            Log.e("CHECKNUMBER1", response.toString())
+            Log.e("CHECKNUMBER3", response.second.statusCode.toString())
 
-    suspend fun getToursFromRemote(): Tour? {
-        val response = repository.getToursFromRemote()
+            val tour = if (response.second.statusCode == 200) {
+                val content = response.third.get()
+                Log.e("CHECKNUMBER5", content)
+                try {
+                    Gson().fromJson(content, Tour::class.java)
 
-        val tour = if (response.second.statusCode == 200) {
-            val content = response.third.get()
-
-            try {
-                Gson().fromJson(content, Tour::class.java)
-            } catch (e: Exception) {
+                } catch (e: Exception) {
+                    Log.e("CHECKNUMBER4", e.toString())
+                    null
+                }
+            } else {
                 null
             }
-        } else {
-            null
+            tourLiveData.postValue(tour)
+            Log.e("CHECKNUMBER2", tour.toString())
         }
-        return tour
     }
-
 
 
     fun getToursFromLocal(): Flow<List<Tour>?> {

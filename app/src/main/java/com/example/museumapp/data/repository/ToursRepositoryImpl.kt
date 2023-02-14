@@ -6,7 +6,6 @@ import com.example.museumapp.data.remote.ToursApi
 import com.example.museumapp.domain.model.Tour
 import com.example.museumapp.domain.repository.ToursRepository
 import com.github.kittinunf.fuel.core.ResponseResultOf
-import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

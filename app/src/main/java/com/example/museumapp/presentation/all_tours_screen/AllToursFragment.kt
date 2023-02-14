@@ -1,6 +1,5 @@
 package com.example.museumapp.presentation.all_tours_screen
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,16 +7,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.museumapp.databinding.AllToursFragmentBinding
 import com.example.museumapp.domain.model.Tour
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
-class AllToursFragment: Fragment() {
+class AllToursFragment: Fragment(), AllToursRecyclerViewAdapter.OnTourItemClickListener {
 
     private lateinit var binding: AllToursFragmentBinding
     private val viewModel: AllToursViewModel by viewModels()
@@ -35,25 +34,35 @@ class AllToursFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupScreen(requireContext())
+        setupScreen()
     }
 
-    private fun setupScreen(context: Context) {
 
-        var tours = viewModel.getToursFromRemote()
-        Log.e("FRAGMENTCHECK1", tours.toString())
-        if (tours != null && viewModel.isInternetConnected(context) && viewModel.checkInternetAccess(context)) {
-            setupAllAllToursRecyclerView(tours)
+    private fun setupScreen() {
+        viewModel.tourLiveData.observe(viewLifecycleOwner) { tours ->
+            Log.e("FRAGMENTCHECK3", tours.toString())
+            if (tours != null) {
+                allToursAdapter = AllToursRecyclerViewAdapter(tours)
+                Log.e("FRAGMENTCHECK2", tours.toString())
+                binding.rvTours.apply {
+                    adapter = allToursAdapter
+                    layoutManager = LinearLayoutManager(activity)
+                }
+            }
         }
     }
 
-
-    private fun setupAllAllToursRecyclerView(tours: Tour) {
-        allToursAdapter = AllToursRecyclerViewAdapter(tours)
-        binding.rvTours.apply {
-            adapter = allToursAdapter
-            layoutManager = LinearLayoutManager(activity)
+    override fun onTourItemClicked(tour: Tour) {
+        val title = tour.title
+        GlobalScope.launch {
+            val tourExists = viewModel.getTourByTitle(title)
+            if (tourExists != null) {
+                viewModel.deleteTour(tour)
+            } else {
+                viewModel.insertTour(tour)
+            }
         }
     }
+
 
 }

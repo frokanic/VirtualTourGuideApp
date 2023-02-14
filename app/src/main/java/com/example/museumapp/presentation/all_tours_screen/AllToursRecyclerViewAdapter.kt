@@ -12,6 +12,11 @@ class AllToursRecyclerViewAdapter(private val tours: Tour): RecyclerView.Adapter
     inner class AllToursViewHolder(val binding: ItemTourBinding) :
         RecyclerView.ViewHolder(binding.root)
 
+    var onTourItemClickListener: OnTourItemClickListener? = null
+    interface OnTourItemClickListener {
+        fun onTourItemClicked(tour: Tour)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AllToursViewHolder {
         return AllToursViewHolder(
             ItemTourBinding.inflate(
@@ -36,8 +41,9 @@ class AllToursRecyclerViewAdapter(private val tours: Tour): RecyclerView.Adapter
             binding.tvAudiolanguagesItemTour.text = "3 languages"
             binding.tvDurationItemTour.text = "${curItem.duration} minutes"
             binding.tvStarsItemTour.text = "${curItem.average_rating}/5 (${curItem.rating_count})"
+            binding.btnItemTour.setOnClickListener {
+                onTourItemClickListener?.onTourItemClicked(curItem)
+            }
         }
     }
-
-
 }
