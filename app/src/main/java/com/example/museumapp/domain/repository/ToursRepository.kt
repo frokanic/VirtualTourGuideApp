@@ -1,11 +1,12 @@
 package com.example.museumapp.domain.repository
 
 import com.example.museumapp.domain.model.Tour
+import com.github.kittinunf.fuel.core.ResponseResultOf
 import kotlinx.coroutines.flow.Flow
 
 interface ToursRepository {
 
-    suspend fun getToursFromRemote(): Tour?
+    suspend fun getToursFromRemote(): ResponseResultOf<String>
 
     fun getToursFromLocal(): Flow<List<Tour>?>
 

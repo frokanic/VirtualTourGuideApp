@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.museumapp.domain.model.Tour
 import com.example.museumapp.domain.repository.ToursRepository
+import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -25,17 +26,22 @@ class AllToursViewModel @Inject constructor(
 ): ViewModel() {
 
 
-    fun getToursFromRemote(): Tour? {
-        val toursList = GlobalScope.launch(Dispatchers.IO) {
-            if (repository.getToursFromRemote() != null) {
-                val tList = withContext(Dispatchers.Default) {
-                    repository.getToursFromRemote()!!
-                    //Log.e("VIEWMODELCHECK3", toursList.toString())
-                }
-            }
-        }
 
-        return tList
+    suspend fun getToursFromRemote(): Tour? {
+        val response = repository.getToursFromRemote()
+
+        val tour = if (response.second.statusCode == 200) {
+            val content = response.third.get()
+
+            try {
+                Gson().fromJson(content, Tour::class.java)
+            } catch (e: Exception) {
+                null
+            }
+        } else {
+            null
+        }
+        return tour
     }
 
 
