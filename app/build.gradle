@@ -85,6 +85,10 @@ dependencies {
     // Kotlin Extensions and Coroutines support for Room
     implementation "androidx.room:room-ktx:2.5.0"
 
+    //Picasso
+    implementation 'com.squareup.picasso:picasso:2.0.0'
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
     // Hilt dependency injection
     implementation "com.google.dagger:hilt-android:2.44"
     kapt "com.google.dagger:hilt-compiler:2.44"
