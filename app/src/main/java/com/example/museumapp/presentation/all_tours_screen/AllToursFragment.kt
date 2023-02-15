@@ -1,20 +1,18 @@
 package com.example.museumapp.presentation.all_tours_screen
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.museumapp.databinding.AllToursFragmentBinding
 import com.example.museumapp.domain.model.Tour
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 
 @AndroidEntryPoint
@@ -23,6 +21,9 @@ class AllToursFragment: Fragment() {
     private lateinit var binding: AllToursFragmentBinding
     private val viewModel: AllToursViewModel by viewModels()
     private lateinit var allToursAdapter: AllToursRecyclerViewAdapter
+    var exists = MutableLiveData<Boolean>()
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,10 +43,8 @@ class AllToursFragment: Fragment() {
 
     private fun setupScreen() {
         viewModel.tourLiveData.observe(viewLifecycleOwner) { tours ->
-            Log.e("FRAGMENTCHECK3", tours.toString())
             if (tours != null) {
                 allToursAdapter = AllToursRecyclerViewAdapter(tours, this)
-                Log.e("FRAGMENTCHECK2", tours.toString())
                 binding.rvTours.apply {
                     adapter = allToursAdapter
                     layoutManager = LinearLayoutManager(activity)
@@ -60,13 +59,11 @@ class AllToursFragment: Fragment() {
         GlobalScope.launch {
             val tourExists = viewModel.getTourByTitle(title)
             if (tourExists != null) {
-                Log.e("AAAAAAAAAAAAAAAA", "DELETED")
                 viewModel.deleteTour(title)
-                allToursAdapter.exists = false
+                exists.postValue(false)
             } else {
-                Log.e("BBBBBBBBBBBBBBBBB", "INSERTED")
                 viewModel.insertTour(tour)
-                allToursAdapter.exists = true
+                exists.postValue(true)
             }
         }
     }
@@ -76,7 +73,11 @@ class AllToursFragment: Fragment() {
 
         GlobalScope.launch {
             val tourExists = viewModel.getTourByTitle(title)
-            allToursAdapter.exists = tourExists == null
+            if (tourExists == null) {
+                exists.postValue(false)
+            } else {
+                exists.postValue(true)
+            }
         }
     }
 }
