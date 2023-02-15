@@ -6,9 +6,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface ToursRepository {
 
-    suspend fun getToursFromRemote(): ResponseResultOf<String>
+    suspend fun getTours(): ResponseResultOf<String>
 
-    fun getToursFromLocal(): Flow<List<Tour>?>
+    fun getToursDb(): Flow<List<Tour>?>
 
     suspend fun getTourByTitle(title: String): Tour?
 

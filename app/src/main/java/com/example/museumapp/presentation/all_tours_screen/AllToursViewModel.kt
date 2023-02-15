@@ -11,6 +11,7 @@ import com.example.museumapp.domain.repository.ToursRepository
 import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -24,10 +25,11 @@ class AllToursViewModel @Inject constructor(
 ): ViewModel() {
 
     val tourLiveData = MutableLiveData<Tour?>()
+    val internetAccess = MutableLiveData<Boolean>()
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            val response = repository.getToursFromRemote()
+            val response = repository.getTours()
 
             val tour = if (response.second.statusCode == 200) {
                 val content = response.third.get()
@@ -45,8 +47,8 @@ class AllToursViewModel @Inject constructor(
     }
 
 
-    fun getToursFromLocal(): Flow<List<Tour>?> {
-        return repository.getToursFromLocal()
+    fun getToursDb(): Flow<List<Tour>?> {
+        return repository.getToursDb()
     }
 
     suspend fun getTourByTitle(title: String): Tour? {
@@ -59,6 +61,14 @@ class AllToursViewModel @Inject constructor(
 
     suspend fun deleteTour(title: String) {
         repository.deleteTour(title)
+    }
+
+    fun intAccess(context: Context) {
+        viewModelScope.launch(Dispatchers.IO) {
+            var isInternetConnected = isInternetConnected(context)
+            var checkInternetAccess = checkInternetAccess(context)
+            internetAccess.postValue(isInternetConnected && checkInternetAccess)
+        }
     }
 
     fun isInternetConnected(context: Context): Boolean {

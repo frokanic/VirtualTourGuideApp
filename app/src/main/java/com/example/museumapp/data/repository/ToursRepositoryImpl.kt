@@ -14,11 +14,11 @@ class ToursRepositoryImpl @Inject constructor(
     private val dao: ToursDao
 ): ToursRepository {
 
-    override suspend fun getToursFromRemote(): ResponseResultOf<String> {
+    override suspend fun getTours(): ResponseResultOf<String> {
         return api.getTour()
     }
 
-    override fun getToursFromLocal(): Flow<List<Tour>?> {
+    override fun getToursDb(): Flow<List<Tour>?> {
         return dao.getTours()
     }
 
