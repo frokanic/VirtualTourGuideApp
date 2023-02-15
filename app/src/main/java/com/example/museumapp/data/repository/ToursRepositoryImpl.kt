@@ -30,8 +30,8 @@ class ToursRepositoryImpl @Inject constructor(
         dao.insertTour(tour)
     }
 
-    override suspend fun deleteTour(tour: Tour) {
-        dao.deleteTour(tour)
+    override suspend fun deleteTour(title: String) {
+        dao.deleteTour(title)
     }
 
 }

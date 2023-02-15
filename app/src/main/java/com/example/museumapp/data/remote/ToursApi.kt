@@ -12,7 +12,6 @@ import javax.inject.Inject
 class ToursApi @Inject constructor() {
 
     suspend fun getTour(): ResponseResultOf<String> {
-        Log.e("APICHECK", Fuel.get(API_URL).responseString().toString())
         return Fuel.get(API_URL).responseString()
     }
 }

@@ -14,6 +14,6 @@ interface ToursRepository {
 
     suspend fun insertTour(tour: Tour)
 
-    suspend fun deleteTour(tour: Tour)
+    suspend fun deleteTour(title: String)
 
 }

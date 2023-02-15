@@ -11,16 +11,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.museumapp.databinding.AllToursFragmentBinding
 import com.example.museumapp.domain.model.Tour
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 @AndroidEntryPoint
-class AllToursFragment: Fragment(), AllToursRecyclerViewAdapter.OnTourItemClickListener {
+class AllToursFragment: Fragment() {
 
     private lateinit var binding: AllToursFragmentBinding
     private val viewModel: AllToursViewModel by viewModels()
-    lateinit var allToursAdapter: AllToursRecyclerViewAdapter
+    private lateinit var allToursAdapter: AllToursRecyclerViewAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,7 +44,7 @@ class AllToursFragment: Fragment(), AllToursRecyclerViewAdapter.OnTourItemClickL
         viewModel.tourLiveData.observe(viewLifecycleOwner) { tours ->
             Log.e("FRAGMENTCHECK3", tours.toString())
             if (tours != null) {
-                allToursAdapter = AllToursRecyclerViewAdapter(tours)
+                allToursAdapter = AllToursRecyclerViewAdapter(tours, this)
                 Log.e("FRAGMENTCHECK2", tours.toString())
                 binding.rvTours.apply {
                     adapter = allToursAdapter
@@ -52,17 +54,29 @@ class AllToursFragment: Fragment(), AllToursRecyclerViewAdapter.OnTourItemClickL
         }
     }
 
-    override fun onTourItemClicked(tour: Tour) {
+    fun onTourItemClicked(tour: Tour) {
         val title = tour.title
+
         GlobalScope.launch {
             val tourExists = viewModel.getTourByTitle(title)
             if (tourExists != null) {
-                viewModel.deleteTour(tour)
+                Log.e("AAAAAAAAAAAAAAAA", "DELETED")
+                viewModel.deleteTour(title)
+                allToursAdapter.exists = false
             } else {
+                Log.e("BBBBBBBBBBBBBBBBB", "INSERTED")
                 viewModel.insertTour(tour)
+                allToursAdapter.exists = true
             }
         }
     }
 
+    fun initialCheck(tour: Tour) {
+        val title = tour.title
 
+        GlobalScope.launch {
+            val tourExists = viewModel.getTourByTitle(title)
+            allToursAdapter.exists = tourExists == null
+        }
+    }
 }

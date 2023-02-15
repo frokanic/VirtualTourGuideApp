@@ -3,7 +3,6 @@ package com.example.museumapp.presentation.all_tours_screen
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,7 +13,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
@@ -30,24 +28,19 @@ class AllToursViewModel @Inject constructor(
     init {
         viewModelScope.launch(Dispatchers.IO) {
             val response = repository.getToursFromRemote()
-            Log.e("CHECKNUMBER1", response.toString())
-            Log.e("CHECKNUMBER3", response.second.statusCode.toString())
 
             val tour = if (response.second.statusCode == 200) {
                 val content = response.third.get()
-                Log.e("CHECKNUMBER5", content)
                 try {
                     Gson().fromJson(content, Tour::class.java)
 
                 } catch (e: Exception) {
-                    Log.e("CHECKNUMBER4", e.toString())
                     null
                 }
             } else {
                 null
             }
             tourLiveData.postValue(tour)
-            Log.e("CHECKNUMBER2", tour.toString())
         }
     }
 
@@ -64,8 +57,8 @@ class AllToursViewModel @Inject constructor(
         repository.insertTour(tour)
     }
 
-    suspend fun deleteTour(tour: Tour) {
-        repository.deleteTour(tour)
+    suspend fun deleteTour(title: String) {
+        repository.deleteTour(title)
     }
 
     fun isInternetConnected(context: Context): Boolean {

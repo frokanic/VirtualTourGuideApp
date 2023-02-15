@@ -16,7 +16,7 @@ interface ToursDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTour(tour: Tour)
 
-    @Delete
-    suspend fun deleteTour(tour: Tour)
+    @Query("DELETE FROM tours WHERE title = :title")
+    suspend fun deleteTour(title: String)
 
 }
